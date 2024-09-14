@@ -1,0 +1,32 @@
+{
+  "analysis": {
+    "objects": [],
+    "signals": [],
+    "agents": [],
+    "unknown": []
+  },
+  "retreival": {
+    "number_of_lanes": 1,
+    "required_objects": [],
+    "required_signals": [],
+    "without_objects": [],
+    "without_signals": []
+  },
+  "planning": {
+    "env": {
+      "weather": "MidRainyNoon",
+      "at_junction": false
+    },
+    "agents": [
+      {
+        "type": "car",
+        "is_ego": true,
+        "action": "go_straight",
+        "behavior": "normal",
+        "pos_id": 1,
+        "road_type": "driving",
+        "relative_to_ego": "none"
+      }
+    ]
+  }
+}

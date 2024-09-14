@@ -1,0 +1,1 @@
+The ego vehicle is approaching the intersection; the adversarial car (on the left) suddenly accelerates and enters the intersection first and suddenly stop to block the geego.

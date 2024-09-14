@@ -1,0 +1,1 @@
+The ego approaches a parked car obstructing its lane and must use the opposite lane to go around when an oncoming car on the road of left suddenly turns into the ego's path without signaling, requiring the ego to react quickly and take evasive action to prevent a collision.

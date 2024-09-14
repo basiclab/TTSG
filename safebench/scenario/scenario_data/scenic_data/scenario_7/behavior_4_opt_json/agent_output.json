@@ -1,0 +1,52 @@
+{
+  "analysis": {
+    "objects": [],
+    "signals": [],
+    "agents": [
+      {
+        "type": "car",
+        "road_type": "driving",
+        "action": "turn_right"
+      },
+      {
+        "type": "car",
+        "road_type": "driving",
+        "action": "block_the_ego"
+      }
+    ],
+    "unknown": []
+  },
+  "retreival": {
+    "number_of_lanes": 2,
+    "required_objects": [],
+    "required_signals": [],
+    "without_objects": [],
+    "without_signals": []
+  },
+  "planning": {
+    "env": {
+      "weather": "ClearNoon",
+      "at_junction": false
+    },
+    "agents": [
+      {
+        "type": "car",
+        "is_ego": "True",
+        "action": "turn_right",
+        "behavior": "normal",
+        "pos_id": 1,
+        "road_type": "driving",
+        "relative_to_ego": "none"
+      },
+      {
+        "type": "car",
+        "is_ego": "False",
+        "action": "block_the_ego",
+        "behavior": "aggressive",
+        "pos_id": 2,
+        "road_type": "driving",
+        "relative_to_ego": "back_right"
+      }
+    ]
+  }
+}

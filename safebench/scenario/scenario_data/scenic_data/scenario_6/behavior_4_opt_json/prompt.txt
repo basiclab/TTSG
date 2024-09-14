@@ -1,0 +1,1 @@
+The ego attempts an unprotected left turn at an intersection while yielding to an oncoming car when the oncoming car veer erratically.

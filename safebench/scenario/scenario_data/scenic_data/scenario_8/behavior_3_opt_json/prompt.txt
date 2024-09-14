@@ -1,0 +1,1 @@
+The ego vehicle is entering the intersection; an adversarial vehicle comes from the road of straight trying to block the ego, causing a near collision with the ego vehicle.

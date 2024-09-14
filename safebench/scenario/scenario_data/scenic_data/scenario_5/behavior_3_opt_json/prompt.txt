@@ -1,0 +1,1 @@
+The ego vehicle is moving straight through the intersection; the adversarial agent, initially on the road of left, runs the red light and makes an abrupt left turn, forcing the ego vehicle to perform a collision avoidance maneuver.

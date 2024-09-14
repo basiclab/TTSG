@@ -1,0 +1,1 @@
+The ego moves straight at an intersection when a crossing vehicle runs the red light from the road of right and brakes abruptly to block the ego, causing the ego to rapidly adapt its trajectory and perform a collision avoidance maneuver.

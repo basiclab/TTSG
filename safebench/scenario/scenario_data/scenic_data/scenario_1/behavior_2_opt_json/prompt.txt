@@ -1,0 +1,1 @@
+The ego vehicle is driving on a straight road; the adversarial pedestrain stands behind a bus stop on the right front, then suddenly sprints out onto the road in front of the ego vehicle and stops.

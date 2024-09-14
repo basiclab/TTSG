@@ -1,0 +1,75 @@
+{
+  "analysis": {
+    "objects": [],
+    "signals": [],
+    "agents": [
+      {
+        "type": "motorcycle",
+        "road_type": "driving",
+        "action": "go_straight"
+      },
+      {
+        "type": "motorcycle",
+        "road_type": "driving",
+        "action": "turn_left"
+      },
+      {
+        "type": "cyclist",
+        "road_type": "sidewalk",
+        "action": "cross_the_road"
+      }
+    ],
+    "unknown": []
+  },
+  "retreival": {
+    "number_of_lanes": 2,
+    "required_objects": [],
+    "required_signals": [],
+    "without_objects": [],
+    "without_signals": []
+  },
+  "planning": {
+    "env": {
+      "weather": "ClearNoon",
+      "at_junction": false
+    },
+    "agents": [
+      {
+        "type": "car",
+        "is_ego": true,
+        "action": "go_straight",
+        "behavior": "normal",
+        "pos_id": 1,
+        "road_type": "driving",
+        "relative_to_ego": "none"
+      },
+      {
+        "type": "motorcycle",
+        "is_ego": false,
+        "action": "go_straight",
+        "behavior": "normal",
+        "pos_id": 2,
+        "road_type": "driving",
+        "relative_to_ego": "front"
+      },
+      {
+        "type": "motorcycle",
+        "is_ego": false,
+        "action": "turn_left",
+        "behavior": "cautious",
+        "pos_id": 3,
+        "road_type": "driving",
+        "relative_to_ego": "front_left"
+      },
+      {
+        "type": "cyclist",
+        "is_ego": false,
+        "action": "cross_the_road",
+        "behavior": "normal",
+        "pos_id": 4,
+        "road_type": "sidewalk",
+        "relative_to_ego": "near_the_crosswalk"
+      }
+    ]
+  }
+}

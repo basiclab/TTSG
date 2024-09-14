@@ -1,0 +1,52 @@
+{
+  "analysis": {
+    "objects": [],
+    "signals": [],
+    "agents": [
+      {
+        "type": "car",
+        "road_type": "driving",
+        "action": "turn_left"
+      },
+      {
+        "type": "cyclist",
+        "road_type": "driving",
+        "action": "block_the_ego"
+      }
+    ],
+    "unknown": []
+  },
+  "retreival": {
+    "number_of_lanes": 1,
+    "required_objects": [],
+    "required_signals": [],
+    "without_objects": [],
+    "without_signals": []
+  },
+  "planning": {
+    "env": {
+      "weather": "ClearNoon",
+      "at_junction": true
+    },
+    "agents": [
+      {
+        "type": "car",
+        "is_ego": true,
+        "action": "turn_left",
+        "behavior": "normal",
+        "pos_id": 1,
+        "road_type": "driving",
+        "relative_to_ego": "none"
+      },
+      {
+        "type": "cyclist",
+        "is_ego": false,
+        "action": "block_the_ego",
+        "behavior": "aggressive",
+        "pos_id": 2,
+        "road_type": "driving",
+        "relative_to_ego": "at_the_destination"
+      }
+    ]
+  }
+}

@@ -1,0 +1,1 @@
+The ego vehicle is turning right at an intersection; the adversarial pedestrian at the destination suddenly crosses the road and stops in the middle of the intersection, blocking the ego vehicle's path.

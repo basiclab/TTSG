@@ -1,0 +1,1 @@
+The ego starts an unprotected left turn at an intersection while yielding to an oncoming car when the oncoming car's on the road of straight throttle malfunctions, leading to an unexpected acceleration and forcing the ego to quickly modify its turning path to avoid a collision.

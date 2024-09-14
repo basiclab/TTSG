@@ -1,0 +1,1 @@
+The ego attempts an unprotected left turn at an intersection while yielding to an oncoming car from the road of straight. The oncoming car suddenly brakes and block the ego, necessitating the ego to rapidly reassess the situation and adjust its turn.

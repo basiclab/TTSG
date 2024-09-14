@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+    content="Traffic Scene Generation from Natural Language Description for Autonomous Vehicles with Large Language Model">
+  <meta name="keywords" content="TTSG, Text-to-Traffic Scene, Traffic Scene Generation, Large Language Model">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Text-to-Traffic Scene (TTSG)</title>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.png">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<style>
+  .best {
+    background-color: rgb(255, 138, 138, 0.7);
+  }
+
+
+  .second-best {
+    background-color: rgb(255, 145, 0, 0.6);
+  }
+
+  #btt-bttn {
+    display: inline-block;
+    background-color: #209cee;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    border-radius: 4px;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    transition: background-color .3s,
+      opacity .5s, visibility .5s;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
+  }
+
+  #btt-bttn::after {
+    content: "\f077";
+    font-family: FontAwesome;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 2em;
+    line-height: 50px;
+    color: #fff;
+  }
+
+  #btt-bttn:hover {
+    cursor: pointer;
+    background-color: #333;
+  }
+
+  #btt-bttn:active {
+    background-color: #555;
+  }
+
+  #btt-bttn.show {
+    opacity: 1;
+    visibility: visible;
+  }
+</style>
+
+<body>
+  <a id="btt-bttn"></a>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-2 publication-title">Traffic Scene Generation from Natural Language Description for
+              Autonomous Vehicles with Large Language Model</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://github.com/Justin900429" target="_blank">Bo-Kai Ruan</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a href="https://github.com/henrytsui000" target="_blank">Hao-Tang Tsui</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a href="https://tw.linkedin.com/in/yung-hui-li-8a3631200" target="_blank">Yung-Hui
+                  Li</a><sup>2</sup>,</span>
+              <span class="author-block">
+                <a href="https://basiclab.lab.nycu.edu.tw" target="_blank">Hong-Han Shuai</a><sup>1</sup>
+              </span>
+              <div class="is-size-5 publication-authors">
+                <span class="author-block"><sup>1</sup>National Yang Ming Chiao Tung University</span>,
+                <span class="author-block"><sup>2</sup>AI Research Center, Hon Hai Research Institute, Taiwan</span>
+              </div>
+            </div>
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a href="#" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv [WIP]</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://youtu.be/f6gauNKk4Us" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                    </span>
+                    <span>Video</span>
+                  </a>
+                </span>
+                <!-- Code Link. -->
+                <span class="link-block">
+                  <a href="https://github.com/basiclab/TTSG" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <img src="./static/images/ttsg_pipeline.svg" alt="this slowpoke moves" />
+        <h2 class="subtitle has-text-centered">
+          The TTSG pipeline, encompassing four primary stages: analysis, road retrieval,
+          agent planning, road ranking, and
+          generation.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              In this work, we introduce a <strong>text-to-traffic scene framework</strong> that <strong>generates
+                diverse
+                traffic scenes within
+                the Carla simulator based on natural language descriptions with a large language model</strong>.
+              Existing methods
+              for text-to-scene generation often depend on generating critical scenarios along a few fixed paths, thus
+              greatly losing the diversity of the environment and limiting the flexibility of customization. In
+              contrast, our approach utilizes a common structured output format to enable the flexible generation of a
+              wide range of traffic scenarios. Users can specify various parameters such as weather conditions, vehicle
+              types, and road signals as one of the generation conditions. Importantly, our model does not require a
+              predetermined location or a trajectory. It can autonomously select the starting point and details of the
+              scenario based on the user's input to generate scenes from scratch. Additionally, our framework is capable
+              of generating not only critical scenarios but also everyday traffic scenes, enhancing its utility. We
+              demonstrate that our framework can provide diverse agent planning and road selection and can facilitate
+              the training of autonomous agents in critical traffic by achieving comparable or superior performance.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Video</h2>
+          <div class="publication-video">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/f6gauNKk4Us?si=yt3GRwXA1w3-TyRO"
+              title="YouTube video player" frameborder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+      <div class="is-centered has-text-centered">
+        <h2 class="title is-3">Pipeline Animation</h2>
+        <img src="./static/images/pipeline.gif" alt="this slowpoke moves" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3">Environment</h2>
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="content">
+            <h3 class="title is-4">Agent's Actions</h2>
+              <p>
+                We support seven actions as shown below. The action <strong>blocking</strong> is designed to be dynamic
+                and
+                would always trying to block the ego.</p>
+              <img style="display: block; margin-left: auto; margin-right: auto;" src="static/images/action.svg"
+                alt="action" />
+          </div>
+        </div>
+        <div class="column">
+          <div class="content">
+            <h3 class="title is-4">Agent's Position</h2>
+              <p>
+                We support seven actions as shown below. The action <strong>blocking</strong> is designed to be dynamic
+                and
+                would always trying to block the ego.</p>
+              <img style="display: block; margin-left: auto; margin-right: auto;"
+                src="static/images/relative_position.svg" alt="position" />
+          </div>
+        </div>
+        <br />
+      </div>
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="content">
+            <h3 class="title is-4">Agent's Type</h2>
+              <p>
+                We support nine different types of agents as shown below.</p>
+
+              <table class="table is-narrow is-hoverable">
+                <thead>
+                  <tr>
+                    <th colspan="5">Agent Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th></th>
+                    <td class="has-text-centered">car</td>
+                    <td class="has-text-centered">bus</td>
+                    <td class="has-text-centered">truck</td>
+                    <th></th>
+                  </tr>
+                  <tr>
+                    <th></th>
+                    <td class="has-text-centered">firetruck</td>
+                    <td class="has-text-centered">ambulance</td>
+                    <td class="has-text-centered">police car</td>
+                    <th></th>
+                  </tr>
+                  <tr>
+                    <th></th>
+                    <td class="has-text-centered">motorcycle</td>
+                    <td class="has-text-centered">cyclist</td>
+                    <td class="has-text-centered">pedestrian</td>
+                    <th></th>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+        </div>
+        <div class="column">
+          <div class="content">
+            <h3 class="title is-4"> Signals and Objects</h2>
+              <p>
+                We support ten different objects and three different signals as shown below.</p>
+              <div class="table-container">
+                <table class="table is-narrow is-hoverable">
+                  <tbody>
+                    <tr>
+                      <th rowspan="2" style="border-right: 1.5px solid #dbdbdb;"><strong>signals</strong></th>
+                      <td class="has-text-centered">traffic_light</td>
+                      <td class="has-text-centered">stop</td>
+
+                    </tr>
+                    <tr>
+                      <td class="has-text-centered" style="border-right: none !important;">yield</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <th rowspan="6" class="has-text-centered"
+                        style="border-right: 1.5px solid #dbdbdb; border-bottom: none;">
+                        <strong>objects</strong>
+                      </th>
+                      <td class="has-text-centered">speed_30</td>
+                      <td class="has-text-centered">speed_40</td>
+                    </tr>
+                    <tr>
+                      <td class="has-text-centered" style="border-right: none !important;">speed_60</td>
+                      <td class="has-text-centered">speed_90</td>
+                    </tr>
+                    <tr>
+                      <td class="has-text-centered" style="border-right: none !important;">parallel_open_crosswalk</td>
+                      <td class="has-text-centered">ladder_crosswalk</td>
+                    </tr>
+                    <tr>
+                      <td class="has-text-centered" style="border-right: none !important;">continental_crosswalk</td>
+                      <td class="has-text-centered">dashed_single_white</td>
+                    </tr>
+                    <tr>
+                      <td class="has-text-centered" style="border-right: none !important;">solid_single_white</td>
+                      <td class="has-text-centered">stop_line</td>
+                    </tr>
+                    <tr>
+                      <td class="has-text-centered" style="border-right: none !important;">stop_sign_on_road</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+          </div>
+        </div>
+        <br />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Animation. -->
+      <h2 class="title is-3">Visualization</h2>
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <div class="columns interpolation-panel has-text-centered">
+            <p class="column is-3" style="display: flex; align-items: center; justify-content: center;">
+              <svg width="90" height="25">
+                <rect x="10" y="7" width="10" height="10" fill="red" />
+                <text x="25" y="17" class="small">agent</text>
+              </svg>
+            </p>
+            <p class="column is-3" style="display: flex; align-items: center; justify-content: center;">
+              <svg width="90" height="25">
+                <rect x="10" y="7" width="10" height="10" fill="MediumSeaGreen" />
+                <text x="25" y="17" class="small">position</text>
+              </svg>
+            </p>
+            <p class="column is-3" style="display: flex; align-items: center; justify-content: center;">
+              <svg width="90" height="25">
+                <rect x="10" y="7" width="10" height="10" fill="DodgerBlue" />
+                <text x="25" y="17" class="small">action</text>
+              </svg>
+            </p>
+            <p class="column is-3" style="display: flex; align-items: center; justify-content: center;">
+              <svg width="90" height="25">
+                <rect x="10" y="7" width="10" height="10" fill="purple" />
+                <text x="25" y="17" class="small">others</text>
+              </svg>
+            </p>
+          </div>
+          <br />
+          <h4 class="title is-4">Normal Scenario</h4>
+          <div class="columns interpolation-panel">
+            <div class="column is-4 has-text-centered">
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/fire/front.mp4" type="video/mp4">
+              </video>
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/fire/bev.mp4" type="video/mp4">
+              </video>
+              <p>A <span style="color:red;">firetruck</span> from the <span style="color:MediumSeaGreen;">left
+                  road</span> is <span style="color:DodgerBlue;">coming</span> when the <span style="color:red;">ego
+                  car</span> is <span style="color:DodgerBlue;">turning right</span>.</p>
+            </div>
+            <div class="column is-4 has-text-centered">
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/normal/front.mp4" type="video/mp4">
+              </video>
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/normal/bev.mp4" type="video/mp4">
+              </video>
+              <p><span style="color:purple;">Daily traffic</span> with more than ten <span
+                  style="color:red;">cars</span>.</p>
+            </div>
+            <div class="column is-4 has-text-centered">
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/lots_of_types/front.mp4" type="video/mp4">
+              </video>
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/lots_of_types/bev.mp4" type="video/mp4">
+              </video>
+              <p><span style="color:purple;">Lots of</span> <span style="color:red;">cars</span>, <span
+                  style="color:red;">buses</span>, <span style="color:red;">trucks</span>, and
+                <span style="color:red;">motorcycles</span> are seen.
+              </p>
+            </div>
+          </div>
+          <br />
+          <h4 class="title is-4">Critical Scenario</h4>
+          <div class="columns interpolation-panel">
+            <div class="column is-4 has-text-centered">
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/ped_block/front.mp4" type="video/mp4">
+              </video>
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/ped_block/bev.mp4" type="video/mp4">
+              </video>
+              <p>A <span style="color: red;">pedestrian</span> on the <span
+                  style="color: MediumSeaGreen;">sidewalk</span> is <span style="color: DodgerBlue;">crossing the
+                  street</span> in front of a
+                truck
+                <span style="color: DodgerBlue;">stopping</span> on the <span
+                  style="color: MediumSeaGreen;">shoulder</span>. Both
+                are located on the <span style="color: MediumSeaGreen;">front right</span>.
+              </p>
+            </div>
+            <div class="column is-4 has-text-centered">
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/dark_unseen/front.mp4" type="video/mp4">
+              </video>
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/dark_unseen/bev.mp4" type="video/mp4">
+              </video>
+              <p>A <span style="color: red;">cyclist</span> is <span style="color: DodgerBlue;">crossing the
+                  street</span> from a <span style="color: MediumSeaGreen;">sidewalk</span> in a dangerous way on a
+                <span style="color: purple;">rainy night</span>.
+              </p>
+            </div>
+            <div class="column is-4 has-text-centered">
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/unprotected_left/front.mp4" type="video/mp4">
+              </video>
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/unprotected_left/bev.mp4" type="video/mp4">
+              </video>
+              <p><span style="color:purple;">Some</span> <span style="color: red;">cars</span> from the <span
+                  style="color: MediumSeaGreen;">opposite
+                  straight</span> is <span style="color: DodgerBlue;">coming</span> when the <span
+                  style="color: red;">ego car</span> is <span style="color: DodgerBlue;">turning left</span>.</p>
+            </div>
+          </div>
+          <br />
+          <h4 class="title is-4">Conditional Selection</h4>
+          <div class="columns interpolation-panel">
+            <div class="column is-4 has-text-centered">
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/traffic_light/front.mp4" type="video/mp4">
+              </video>
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/traffic_light/bev.mp4" type="video/mp4">
+              </video>
+              <p>The <span style="color: red;">ego car</span> is <span style="color: DodgerBlue;">going straight</span>
+                at the intersection with a <span style="color: purple;">traffic light</span>. There are some <span
+                  style="color: purple;">puddles</span> on the road.
+              </p>
+            </div>
+            <div class="column is-4 has-text-centered">
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/conditional_unprotected_left/front.mp4" type="video/mp4">
+              </video>
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/conditional_unprotected_left/bev.mp4" type="video/mp4">
+              </video>
+              <p>
+                The <span style="color: red;">ego car</span> is <span style="color: DodgerBlue;">turning left</span> at
+                the intersection with no <span style="color: purple;">traffic light</span>,
+                <span style="color: purple;">stop sign</span>, or <span style="color: purple;">stop sign on road</span>.
+                A <span style="color: red;">car</span> coming <span style="color: MediumSeaGreen;">from the
+                  straight</span> is
+                <span style="color: DodgerBlue;">turning right</span>.
+              </p>
+            </div>
+            <div class="column is-4 has-text-centered">
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/crosswalk/front.mp4" type="video/mp4">
+              </video>
+              <video autoplay controls muted loop playsinline width="100%">
+                <source src="./static/videos/crosswalk/bev.mp4" type="video/mp4">
+              </video>
+              <p>A <span style="color: red;">pedestrian</span> is <span style="color: DodgerBlue;">crossing the
+                  road</span> with the <span style="color: purple;">parallel open crosswalk</span> and the <span
+                  style="color: red;">ego car</span> is <span style="color: DodgerBlue;">turning right</span>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3">Experiments</h2>
+      <div class="content">
+        <h3 class="subtitle is-4">Diversity Test</h3>
+        <p> We provide a diversity test to evaluate the diversity of the generated traffic scenes. We make eight
+          different scenes and test each scene five times. We report the <i>"Agent Diversity"</i> (AD), <i>"Road
+            Diversity"</i> (RD), and <i>"Text Matching"</i> (TM). Prompts for the diversity test can be found in <a
+            href="https://github.com/basiclab/TTSG/tree/main/diversity_test" target="_blank">here</a>.
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th rowspan="3" colspan="1" class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">Metric
+                </th>
+                <th colspan="8" class="has-text-centered">Scenario</th>
+                <th rowspan="3" class="has-text-centered">Avg.</th>
+              </tr>
+              <tr>
+                <th colspan="2" class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">Normal</th>
+                <th colspan="3" class="has-text-centered">Critical</th>
+                <th colspan="3" class="has-text-centered">Conditional</th>
+              </tr>
+              <tr>
+                <th colspan="1" class="has-text-centered is-size-7" style="vertical-align: middle;">Daily<br />Traffic
+                </th>
+                <th colspan="1" class="has-text-centered is-size-7" style="vertical-align: middle;">Intersection</th>
+                <th class="has-text-centered is-size-7" style="vertical-align: middle;">
+                  Pedestrian<br />Crushing</th>
+                <th colspan="1" class="has-text-centered is-size-7"
+                  style="vertical-align: middle; border-right: none !important;">Blocking<br />Agent
+                </th>
+                <th colspan="1" class="has-text-centered is-size-7"
+                  style="vertical-align: middle; border-right: 1.5px solid #dbdbdb;">
+                  Dangerous<br />Cut-off</th>
+                <th colspan="1" class="has-text-centered is-size-7" style="vertical-align: middle;">Only
+                  having<br />Two-wheel<br />Vehicles</th>
+                <th colspan="1" class="has-text-centered is-size-7"
+                  style="vertical-align: middle; border-right: none !important;">
+                  Having<br />Emergency<br />Vehicles</th>
+                <th colspan="1" class="has-text-centered is-size-7"
+                  style="vertical-align: middle; border-right: 1.5px solid #dbdbdb;">Rainy<br />Weather</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">AD<span
+                    style="font-size:small;">↥</span></th>
+                <td class="has-text-centered">0.789</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">0.833</td>
+                <td class="has-text-centered">0.500</td>
+                <td class="has-text-centered">0.750</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">0.600</td>
+                <td class="has-text-centered">0.714</td>
+                <td class="has-text-centered">0.500</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">0.800</td>
+                <td class="has-text-centered">0.686</td>
+              </tr>
+              <tr>
+                <th class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">RD<span
+                    style="font-size:small;">↥</span></th>
+                <td class="has-text-centered">1.000</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">1.000</td>
+                <td class="has-text-centered">1.000</td>
+                <td class="has-text-centered">1.000</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">1.000</td>
+                <td class="has-text-centered">0.800</td>
+                <td class="has-text-centered">1.000</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">1.000</td>
+                <td class="has-text-centered">0.975</td>
+              </tr>
+              <tr>
+                <th class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">TM<span
+                    style="font-size:small;">↥</span></th>
+                <td class="has-text-centered">1.000</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">0.800</td>
+                <td class="has-text-centered">0.400</td>
+                <td class="has-text-centered">0.800</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">0.800</td>
+                <td class="has-text-centered">0.600</td>
+                <td class="has-text-centered">1.000</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">1.000</td>
+                <td class="has-text-centered">0.800</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+      <div class=" content">
+        <h3 class="subtitle is-4">Critical Scenario</h3>
+        <p>We show that our approach can also be used to train the agent under the critical scenario by selected three
+          challenging scenarios from SafeBench. "CR" represents <i>"Collision Rate"</i> and "OS" represents <i>"Overall
+            Score"</i>. We compare our results with Learning-to-Collide (LS) <a href="#cite-1">[1]</a>, AdvSim (AS) <a
+            href="#cite-2">[2]</a>, Adversarial Trajectory Optimization (AT) <a href="#cite-3">[3]</a>, and ChatScene
+          (CS) <a href="#cite-4">[4]</a>. We color each column with <span class="best">best</span> and <span
+            class="second-best">second best</span>. </p>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th rowspan="2" class="has-text-centered">Algo.</th>
+                <th rowspan="2" colspan="1" class="has-text-centered">Metric</th>
+                <th colspan="3" class="has-text-centered">Scenario</th>
+                <th rowspan="2" style="border-right: none !important;" class="has-text-centered">Avg.</th>
+              </tr>
+              <tr>
+                <th colspan="1" class="has-text-centered">Straight Obstacle</th>
+                <th class="has-text-centered">Lane Changing</th>
+                <th colspan="1" class="has-text-centered">Unprotected Left-turn</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">LC</a>
+                </th>
+                <th rowspan="5" colspan="1" class="has-text-centered">CR<span style="font-size:small;">↧</span></th>
+                <td class="has-text-centered">0.120</td>
+                <td class="has-text-centered">0.510</td>
+                <td style="border-right: 1px solid #dbdbdb;" class="best has-text-centered">0.000</td>
+                <td style="border-right: none !important;" colspan="1" class="has-text-centered">0.210</td>
+              </tr>
+              <tr>
+                <th class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">AS</a>
+                </th>
+                <td class="has-text-centered">0.230</td>
+                <td class="has-text-centered">0.530</td>
+                <td style="border-right: 1px solid #dbdbdb;" class="second-best has-text-centered">0.050</td>
+                <td style="border-right: none !important;" colspan="1" class="has-text-centered">0.270</td>
+              </tr>
+              <tr>
+                <th class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">AT</a>
+                </th>
+                <td class="has-text-centered">0.140</td>
+                <td class="has-text-centered">0.300</td>
+                <td style="border-right: 1px solid #dbdbdb;" class="best has-text-centered">0.000</td>
+                <td style="border-right: none !important;" colspan="1" class="has-text-centered">0.150</td>
+              </tr>
+              <tr>
+                <th class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">CS</a>
+                </th>
+                <td class="second-best has-text-centered">0.030</td>
+                <td class="best has-text-centered">0.110</td>
+                <td style="border-right: 1px solid #dbdbdb;" colspan="1" class="has-text-centered">0.100</td>
+                <td style="border-right: none !important;" class="second-best has-text-centered">0.080</td>
+              </tr>
+              <tr>
+                <th class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">Ours</th>
+                <td class="best has-text-centered">0.000</td>
+                <td class="second-best has-text-centered">0.020</td>
+                <td style="border-right: 1px solid #dbdbdb;" class="best has-text-centered">0.000</td>
+                <td style="border-right: none !important;" class="best has-text-centered">0.067</td>
+              </tr>
+              <tr>
+                <th class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">LC
+                </th>
+                <th rowspan="5" colspan="1" class="has-text-centered" style="border-bottom: none;">OS<span
+                    style="font-size:small;">↥</span></th>
+                <td class="has-text-centered">0.827</td>
+                <td class="has-text-centered">0.684</td>
+                <td style="border-right: 1px solid #dbdbdb;" class="best has-text-centered">0.954</td>
+                <td style="border-right: none !important;" class="has-text-centered">0.822</td>
+              </tr>
+
+              <th class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">AS
+              </th>
+              <td class="has-text-centered">0.784</td>
+              <td class="has-text-centered">0.666</td>
+              <td style="border-right: 1px solid #dbdbdb;" class="has-text-centered">0.937</td>
+              <td style="border-right: none !important;" class="has-text-centered">0.796</td>
+              </tr>
+
+              <th class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">AT
+              </th>
+              <td class="has-text-centered">0.849</td>
+              <td class="has-text-centered">0.803</td>
+              <td style="border-right: 1px solid #dbdbdb;" class="has-text-centered">0.948</td>
+              <td style="border-right: none !important;" class="has-text-centered">0.867</td>
+              </tr>
+              <tr>
+                <th class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">CS</a>
+                </th>
+                <td class="second-best has-text-centered">0.905</td>
+                <td class="best has-text-centered">0.906</td>
+                <td style="border-right: 1px solid #dbdbdb;" class="has-text-centered">0.903</td>
+                <td style="border-right: none !important;" class="second-best has-text-centered">0.905</td>
+              </tr>
+              <tr>
+                <th colspan="1" class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">Ours</th>
+                <td colspan="1" class="best has-text-centered">0.955</td>
+                <td colspan="1" class="second-best has-text-centered">0.861</td>
+                <td style="border-right: 1px solid #dbdbdb;" colspan="1" class="second-best   has-text-centered">
+                  0.951
+                </td>
+                <td style="border-right: none !important;" colspan="1" class="best has-text-centered">
+                  0.922
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+      <div class="content">
+        <h3 class="subtitle is-4">Ablation Study</h3>
+        <p>We evaluate the efficacy of framework components by generating ten distinct prompts, each tailored to
+          test the components under diverse scenarios. These scenarios encompass three normal, four critical, and three
+          specific road conditions, such as the presence of traffic lights or the absence of crossroads. "AA" represents
+          <i>"Agent Accuracy"</i>, "RA" represents <i>"Road Accuracy"</i>, and "TM" represents <i>"Text Matching"</i>.
+          Prompts for the ablation study can be found in <a
+            href="https://github.com/basiclab/TTSG/blob/main/misc/prompt_for_testing.py" target="_blank">here</a>.
+        </p>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th colspan="1" rowspan="2" class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">
+                  Quality.</th>
+                <th colspan="6" class="has-text-centered">Scenario</th>
+                <th rowspan="2" colspan="2" style="border-right: none !important;" class="has-text-centered">Avg.</th>
+              </tr>
+              <tr>
+                <th colspan="2" rowspan="1" class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">Normal
+                </th>
+                <th colspan="2" rowspan="1" class="has-text-centered">Critical</th>
+                <th colspan="2" rowspan="1" class="has-text-centered">Conditional</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th colspan="1" rowspan="1" class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">Plan
+                  Quality</th>
+                <td class="has-text-centered">AA<span style="font-size:small;">↥</span></td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">RA<span
+                    style="font-size:small;">↥</span></td>
+                <td class="has-text-centered">AA<span style="font-size:small;">↥</span></td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">RA<span
+                    style="font-size:small;">↥</span></td>
+                <td class="has-text-centered">AA<span style="font-size:small;">↥</span></td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">RA<span
+                    style="font-size:small;">↥</span></td>
+                <td class="has-text-centered">AA<span style="font-size:small;">↥</span></td>
+                <td class="has-text-centered" style="border-right: none !important;">RA<span
+                    style="font-size:small;">↥</span></td>
+              </tr>
+              <tr>
+                <td colspan="1" rowspan="1" class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">w/o.
+                  analysis</td>
+                <td class="has-text-centered">0.917</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">0.667</td>
+                <td class="has-text-centered">0.833</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">0.750</td>
+                <td class="has-text-centered">0.750</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">0.917</td>
+                <td class="has-text-centered">0.833</td>
+                <td class="has-text-centered" style="border-right: none !important;">0.775</td>
+              </tr>
+              <tr>
+                <td colspan="1" rowspan="1" class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">
+                  w.&nbsp;&nbsp;&nbsp;&nbsp; analysis</td>
+                <td class="has-text-centered">0.917</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;"><strong>1.000</strong></td>
+                <td class="has-text-centered"><strong>0.875</strong></td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">0.750</td>
+                <td class="has-text-centered"><strong>1.000</strong></td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">0.917</td>
+                <td class="has-text-centered"><strong>0.925</strong></td>
+                <td class="has-text-centered" style="border-right: none !important;">0.875</td>
+              </tr>
+              <tr>
+                <th colspan="1" rowspan="1" class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">Scene
+                  Quality</th>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;" colspan="2">TM<span
+                    style="font-size:small;">↥</span></td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;" colspan="2">TM<span
+                    style="font-size:small;">↥</span></td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;" colspan="2">TM<span
+                    style="font-size:small;">↥</span></td>
+                <td class="has-text-centered" style="border-right: none !important;" colspan="2">TM<span
+                    style="font-size:small;">↥</span></td>
+              </tr>
+              <tr>
+                <td colspan="1" rowspan="1" class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">w/o.
+                  ranking</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;" colspan="2">0.667</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;" colspan="2">0.450</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;" colspan="2">0.600</td>
+                <td class="has-text-centered" style="border-right: none !important;" colspan="2">0.560</td>
+              </tr>
+              <tr>
+                <td colspan="1" rowspan="1" class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;">
+                  w.&nbsp;&nbsp;&nbsp;&nbsp; ranking</td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;" colspan="2">
+                  <strong>0.867</strong>
+                </td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;" colspan="2">
+                  <strong>0.750</strong>
+                </td>
+                <td class="has-text-centered" style="border-right: 1.5px solid #dbdbdb;" colspan="2">
+                  <strong>0.800</strong>
+                </td>
+                <td class="has-text-centered" style="border-right: none !important;" colspan="2">
+                  <strong>0.800</strong>
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">Reference</h2>
+      <p id="cite-1">[1] W. Ding, B. Chen, M. Xu, and D. Zhao, “Learning to collide: An adaptive safety-critical
+        scenarios generating
+        method,” in IEEE/RSJ International Conference on Intelligent Robots and Systems, 2020, pp. 2243–2250.</p>
+      <p id="cite-2">[2] J. Wang, A. Pun, J. Tu, S. Manivasagam, A. Sadat, S. Casas, M. Ren, and R. Urtasun, “Advsim:
+        Generating safety-critical scenarios for self-driving vehicles,” in Proceedings of the IEEE/CVF Conference on
+        Computer Vision and Pattern Recognition, 2021, pp. 9909–9918</p>
+      <p id="cite-3">[3] J. Zhang, C. Xu, and B. Li, “Chatscene: Knowledge-enabled safety-critical scenario generation
+        for autonomous vehicles,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition,
+        2024, pp. 15 459-15 469.</p>
+      <p id="cite-4">[4] Q. Zhang, S. Hu, J. Sun, Q. A. Chen, and Z. M. Mao, “On adversarial robustness of trajectory
+        prediction for autonomous vehicles,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
+        Recognition, 2022, pp. 15 159–15 168.</p>
+    </div>
+  </section>
+
+  <!-- <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>
+            BobTex
+        </code></pre>
+    </div>
+  </section> -->
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <a class="icon-link" href="#">
+          <i class="fas fa-file-pdf"></i>
+        </a>
+        <a class="icon-link" target="_blank" href="https://github.com/basiclab/TTSG" class="external-link" disabled>
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p class="footer-paragraph">
+              This page is adapted from the <a href="https://github.com/nerfies/nerfies.github.io">Nerfies project
+                page</a> and is licensed under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative
+                Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+<script>
+  var btn = $('#btt-bttn');
+
+  $(window).scroll(function () {
+    if ($(window).scrollTop() > 300) {
+      btn.addClass('show');
+    } else {
+      btn.removeClass('show');
+    }
+  });
+
+  btn.on('click', function (e) {
+    e.preventDefault();
+    $('html, body').animate({ scrollTop: 0 }, '300');
+  });
+
+</script>
+
+</html>

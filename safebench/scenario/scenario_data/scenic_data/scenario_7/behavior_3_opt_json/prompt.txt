@@ -1,0 +1,1 @@
+The ego vehicle is turning right; the adversarial car (positioned ahead on the right) reverses abruptly for blocking.

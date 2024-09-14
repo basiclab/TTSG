@@ -1,0 +1,1 @@
+The ego vehicle is making an unprotected left turn; the adversarial vehicle from the opposite straight approaches the intersection at a normal speed but then suddenly attempts to make a last-second right turn.

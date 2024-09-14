@@ -1,0 +1,1 @@
+The ego encounters a parked car blocking its lane and must use the opposite lane to bypass the vehicle when an oncoming pedestrian enters the lane without warning and suddenly stop to block the ego, necessitating the ego to brake sharply or steer to avoid hitting the pedestrian.

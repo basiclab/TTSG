@@ -1,0 +1,1 @@
+The ego is performing a right turn at an intersection when the crossing car from the left road suddenly speeds up, entering the intersection and causing the ego to brake abruptly to avoid a collision.

@@ -1,0 +1,1 @@
+The ego vehicle is changing to the right lane; the adversarial car is driving parallel to the ego and blocking its path.

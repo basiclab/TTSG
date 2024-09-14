@@ -1,0 +1,75 @@
+{
+  "analysis": {
+    "objects": [],
+    "signals": [],
+    "agents": [
+      {
+        "type": "ambulance",
+        "road_type": "driving",
+        "action": "go_straight"
+      },
+      {
+        "type": "police",
+        "road_type": "driving",
+        "action": "turn_left"
+      },
+      {
+        "type": "firetruck",
+        "road_type": "driving",
+        "action": "turn_right"
+      }
+    ],
+    "unknown": []
+  },
+  "retreival": {
+    "number_of_lanes": 3,
+    "required_objects": [],
+    "required_signals": [],
+    "without_objects": [],
+    "without_signals": []
+  },
+  "planning": {
+    "env": {
+      "weather": "ClearNoon",
+      "at_junction": true
+    },
+    "agents": [
+      {
+        "type": "ambulance",
+        "is_ego": false,
+        "action": "go_straight",
+        "behavior": "normal",
+        "pos_id": 1,
+        "road_type": "driving",
+        "relative_to_ego": "road_of_straight"
+      },
+      {
+        "type": "police",
+        "is_ego": false,
+        "action": "turn_left",
+        "behavior": "normal",
+        "pos_id": 2,
+        "road_type": "driving",
+        "relative_to_ego": "road_of_left_turn"
+      },
+      {
+        "type": "firetruck",
+        "is_ego": false,
+        "action": "turn_right",
+        "behavior": "normal",
+        "pos_id": 3,
+        "road_type": "driving",
+        "relative_to_ego": "road_of_right_turn"
+      },
+      {
+        "type": "car",
+        "is_ego": true,
+        "action": "go_straight",
+        "behavior": "normal",
+        "pos_id": "none",
+        "road_type": "driving",
+        "relative_to_ego": "none"
+      }
+    ]
+  }
+}

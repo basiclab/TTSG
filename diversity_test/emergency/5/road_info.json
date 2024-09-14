@@ -1,0 +1,20 @@
+{
+  "town": "Town06",
+  "road_id": [
+    58
+  ],
+  "direction": "left",
+  "road_info": {
+    "have_shoulder": true,
+    "have_sidewalk": false,
+    "number_of_lane": 3,
+    "can_turn_left": false,
+    "can_turn_right": true,
+    "can_go_straight": true,
+    "have_left_from": true,
+    "have_right_from": false,
+    "have_straight_from": true,
+    "have_opposite": true,
+    "num_of_waypoints": 23
+  }
+}

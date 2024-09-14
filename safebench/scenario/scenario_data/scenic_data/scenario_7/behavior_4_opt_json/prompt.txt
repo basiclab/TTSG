@@ -1,0 +1,1 @@
+he ego vehicle is turning right; the adversarial car (positioned behind on the right) suddenly accelerates and then decelerates causing blocking.

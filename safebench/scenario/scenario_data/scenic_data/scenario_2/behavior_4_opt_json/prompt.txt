@@ -1,0 +1,1 @@
+The ego vehicle is turning left at an intersection; the adversarial cyclist at the destination suddenly stops in the middle of the intersection and dismounts, obstructing the ego vehicle's path.

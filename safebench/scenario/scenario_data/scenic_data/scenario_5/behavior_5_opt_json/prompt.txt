@@ -1,0 +1,1 @@
+The ego vehicle is going straight through the intersection; the adversarial vehicle approaches from the road of left turn left to cut off the ego vehicle.

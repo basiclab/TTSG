@@ -1,0 +1,61 @@
+{
+  "analysis": {
+    "objects": [],
+    "signals": [],
+    "agents": [
+      {
+        "type": "motorcycle",
+        "road_type": "sidewalk",
+        "action": "cross_the_road"
+      },
+      {
+        "type": "motorcycle",
+        "road_type": "driving",
+        "action": "stop"
+      }
+    ],
+    "unknown": []
+  },
+  "retreival": {
+    "number_of_lanes": 1,
+    "required_objects": [],
+    "required_signals": [],
+    "without_objects": [],
+    "without_signals": []
+  },
+  "planning": {
+    "env": {
+      "weather": "ClearNoon",
+      "at_junction": true
+    },
+    "agents": [
+      {
+        "type": "car",
+        "is_ego": true,
+        "action": "turn_right",
+        "behavior": "normal",
+        "pos_id": 1,
+        "road_type": "driving",
+        "relative_to_ego": "none"
+      },
+      {
+        "type": "motorcycle",
+        "is_ego": false,
+        "action": "cross_the_road",
+        "behavior": "aggressive",
+        "pos_id": 2,
+        "road_type": "sidewalk",
+        "relative_to_ego": "front_right"
+      },
+      {
+        "type": "motorcycle",
+        "is_ego": false,
+        "action": "stop",
+        "behavior": "aggressive",
+        "pos_id": 3,
+        "road_type": "driving",
+        "relative_to_ego": "front"
+      }
+    ]
+  }
+}
