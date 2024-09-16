@@ -97,3 +97,14 @@ Detailed information about the environment setup can be found [here](./ENVIRONME
 ## D. Known Issue 🚨
 
 * We have identified an issue with the current Carla version, where a segmentation fault occurs when setting the `pedestrian`’s relative position to `at_the_sidewalk`. This happens when calling the `previous()` function from the Carla API, causing the program to crash. We recommend retrying the process if you encounter this issue.
+
+## Citation
+
+```bibtex
+@article{ruan2024ttsg,
+  title={Traffic Scene Generation from Natural Language Description for Autonomous Vehicles with Large Language Model},
+  author={Ruan, Bo-Kai and Tsui, Hao-Tang and Li, Yung-Hui and Shuai, Hong-Han},
+  journal={arXiv preprint arXiv:2409.09575},
+  year={2024}
+}
+```
