@@ -16,7 +16,7 @@
 > Bo-Kai Ruan, Hao-Tang Tsui, Yung-Hui Li, Hong-Han Shuai
 >
 > * Contact: Bo-Kai Ruan
-> * [arXiv paper](#) | [Project Website](https://basiclab.github.io/TTSG)
+> * [arXiv paper](http://arxiv.org/abs/2409.09575) | [Project Website](https://basiclab.github.io/TTSG)
 
 
 ## A. Installation 🚀
