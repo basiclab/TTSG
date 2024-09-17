@@ -4,8 +4,8 @@
 
 **A text-to-traffic-scene generation pipeline with the large language model**
 
-<a href="#"><img src="https://img.shields.io/badge/arXiv-Paper-<color>"></a>
-<a href="#license-and-citation">
+<a href="https://arxiv.org/abs/2409.09575"><img src="https://img.shields.io/badge/arXiv-2409.09575-<color>"></a>
+<a href="#citation">
   <img alt="License: Apache2.0" src="https://img.shields.io/badge/license-Apache%202.0-blue.svg"/>
 </a>
 
